@@ -1,11 +1,9 @@
---
 -- SPDX-FileCopyrightText: In 2014, Chris Pressey, the original author of this work, placed it into the public domain.
 -- For more information, see the file Unlicense.txt in the LICENSES directory.
 --
 -- SPDX-License-Identifier: Unlicense
---
 
-PDF = {}
+local PDF = {}
 PDF.new = function()
 	local pdf = {}		-- instance variable
 	local page = {}		-- array of page descriptors
@@ -22,7 +20,7 @@ PDF.new = function()
 
 	local add = function(obj)
 		table.insert(object, obj)
-		obj.number = table.getn(object)
+		obj.number = #object
 		return obj
 	end
 
@@ -117,7 +115,7 @@ PDF.new = function()
 
 		xref_table_offset = fh:seek()
 		fh:write("xref\n")
-		fh:write(string.format("%d %d\n", 1, table.getn(object)))
+		fh:write(string.format("%d %d\n", 1, #object))
 		for i, obj in ipairs(object) do
 			fh:write(
 			    string.format("%010d %05d n \n", obj.offset, 0)
@@ -128,7 +126,7 @@ PDF.new = function()
 	local write_trailer = function(fh)
 		fh:write("trailer\n")
 		fh:write("<<\n")
-		fh:write(string.format("/Size %d\n", table.getn(object)))
+		fh:write(string.format("/Size %d\n", #object))
 		fh:write("/Root " .. get_ref(catalog_obj) .. "\n")
 		fh:write(">>\n")
 		fh:write("startxref\n")
@@ -173,7 +171,7 @@ PDF.new = function()
 			end
 			
 			table.insert(used_font, font_obj)
-			return "/F" .. table.getn(used_font)
+			return "/F" .. #used_font
 		end
 
 		--
@@ -510,3 +508,4 @@ PDF.new = function()
 
 	return pdf
 end
+return PDF

@@ -419,6 +419,11 @@ PDF.new = function()
 			pg:transform(1, tana, tanb, 1, 0, 0)
 		end
 
+		pg.stream_from_string = function(pg, str)
+			table.insert(contents, str)
+		end
+
+		-- contents -> objects via add()
 		pg.add = function(pg)
 			local contents_obj, this_obj, resources
 			local i, font_obj
